@@ -5,13 +5,15 @@ import Expression from './components/Expression.js';
 
 const MODEL_URL = '/models';
 const displaySize = { width: 350, height: 350 };
-const minConfidence = 0.3;
+const minConfidence = 0.1;
+const DELAY = 33;
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       fullFaceDescription: undefined,
+      modelsLoaded: false,
     };
     this.canvas = React.createRef();
   }
@@ -19,6 +21,9 @@ export default class App extends Component {
   async componentDidMount() {
     console.log('haaa');
     await this.loadModels();
+    this.setState({
+      modelsLoaded: true,
+    });
   }
 
   async loadModels () {
@@ -49,18 +54,20 @@ export default class App extends Component {
     image.onload = async () => {
       ctx.drawImage(image, 0, 0);
       await this.getFullFaceDescription(this.canvas.current);
-      this.drawDescription(this.canvas.current);
+      // this.drawDescription(this.canvas.current);
     };
     image.src = picture;
   }
 
   render() {
+    const { modelsLoaded, fullFaceDescription } = this.state;
     return (
       <div className="App" >
-        <WebCamPicture landmarkPicture={this.landmarkWebCamPicture} />
-        <canvas ref={this.canvas} {...displaySize} />
-        { this.state.fullFaceDescription &&
+        { modelsLoaded &&
+          <WebCamPicture landmarkPicture={this.landmarkWebCamPicture} auto={DELAY} /> }
+        { fullFaceDescription &&
           <Expression expressions={this.state.fullFaceDescription.expressions} /> }
+        <canvas ref={this.canvas} {...displaySize} />          
       </div>
     );
   }

@@ -11,10 +11,27 @@ export default class WebCamPicure extends Component {
   constructor(props){
     super(props);
     this.state = {
-      takingPicture: false
+      takingPicture: false,
+      autoEnabled: false,
     }
     this.image = null;
     this.webcam = React.createRef();
+  }
+
+  componentDidMount = () => {
+    if (this.props.auto) {
+      setInterval(() => {
+        if (this.state.autoEnabled) {
+          this.capture();
+        }
+      }, this.props.auto);
+    }
+  }
+
+  toggle = () => {
+    this.setState({
+      autoEnabled: !this.state.autoEnabled,
+    });
   }
 
   capture = () => {
@@ -34,8 +51,8 @@ export default class WebCamPicure extends Component {
           width={350}
           videoConstraints={videoConstraints}
         />
-        <img src="/img/cameraIcon.png" alt="Take Pic" height={100}
-          onClick={this.capture}
+        <img src="/img/cameraIcon.png" alt="Toggle" height={100}
+          onClick={this.toggle}
         />
       </div>
     );
