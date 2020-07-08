@@ -54,7 +54,7 @@ export default class App extends Component {
     image.onload = async () => {
       ctx.drawImage(image, 0, 0);
       await this.getFullFaceDescription(this.canvas.current);
-      // this.drawDescription(this.canvas.current);
+      this.drawDescription(this.canvas.current);
     };
     image.src = picture;
   }
